@@ -1,0 +1,15 @@
+---
+title: "Models"
+author: "Roshan Ranganathan"
+format: html
+execute: 
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: FALSE
+library(tidyverse)
+```
+
+We are working with polling data from a YouGov survey conducted on March 10-12, 2024, which sampled 1,559 US adult citizens. We seek to predict the proportion of votes that will be cast for Joe Biden in the 2024 election, based on respondents' stated voting intentions.
