@@ -10,6 +10,44 @@ execute:
 #| label: setup
 #| message: FALSE
 library(tidyverse)
+library(brms)
+library(tidybayes)
+library(gtsummary)
 ```
 
 We are working with polling data from a YouGov survey conducted on March 10-12, 2024, which sampled 1,559 US adult citizens. We seek to predict the proportion of votes that will be cast for Joe Biden in the 2024 election, based on respondents' stated voting intentions.
+
+$$ biden_i =  \mu + \epsilon_i $$
+
+```{r}
+#|label: model
+#|cache: true
+poll_data <- tibble(biden = c(rep(1, 655), rep(0, 904)))
+
+brm(formula = biden ~ 1, 
+data = poll_data, 
+family = bernoulli(), 
+refresh = 0, 
+silent = 2,
+seed = 9)
+
+```
+
+```{r}
+#|label: plot
+fit_bern %>%
+  add_epred_draws(newdata = ndata) %>%
+  select(.epred) %>%
+  ggplot(aes(x = .epred)) +
+  geom_density(aes(y = after_stat(count / sum(count)))) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Posterior Distribution for \u03C1",
+    subtitle = "There is a 95% chance for a value between 40% and 45%.",
+    x = expression("Proportion, " ~ rho ~ ", of Votes for Biden"),
+    y = "Probability"
+  )
+
+```
+
